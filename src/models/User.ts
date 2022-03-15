@@ -1,13 +1,17 @@
+import axios, { AxiosResponse } from 'axios'
+import { Eventing } from './Eventing';
+
 interface UserProps {
+    id?: number;
     name?: string;
     age?: number
 }
 
-type Callback = () => void;
+
 
 export class User {
-    events: { [key: string]: Callback[] } = {} //This tells TS that our events object will take a key that's a string and an array of callback functions
-
+    events: Eventing = new Eventing()
+;
     constructor(private data: UserProps){};
 
     get(propName: string): (number | string) {
@@ -18,19 +22,20 @@ export class User {
         Object.assign(this.data, update);
     }
 
-    on(eventName: string, callback: Callback): void {
-        const handlers = this.events[eventName] || [];
-        handlers.push(callback);
-        this.events[eventName] = handlers;
+    fetch():void {
+        axios.get(`http://localhost:3000/users/${this.get('id')}`)
+            .then((response: AxiosResponse): void => {
+                this.set(response.data);
+            })
     }
 
-    trigger(eventName: string): void {
-        const handlers = this.events[eventName];
+    save(): void {
+        const id = this.get('id');
 
-        if(!handlers || handlers.length === 0) {
-            return;
+        if(id) {
+            axios.put(`http://localhost:3000/users/${id}`, this.data)
+        } else {
+            axios.post('http://localhost:3000/users', this.data)
         }
-
-        handlers.forEach(callback => callback());
     }
 }
