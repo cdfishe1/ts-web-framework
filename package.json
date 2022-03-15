@@ -4,7 +4,10 @@
   "description": "Building a mini web framework using typescript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:db": "json-server -w db.json",
+    "start:parcel": "parcel index.html",
+    "start": "concurrently npm:start:*"
   },
   "repository": {
     "type": "git",
@@ -18,6 +21,10 @@
   },
   "homepage": "https://github.com/cdfishe1/ts-web-framework#readme",
   "devDependencies": {
+    "concurrently": "^7.0.0",
     "typescript": "^4.6.2"
+  },
+  "dependencies": {
+    "axios": "^0.26.1"
   }
 }
